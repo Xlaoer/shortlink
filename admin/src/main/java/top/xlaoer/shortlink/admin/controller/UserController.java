@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import top.xlaoer.shortlink.admin.common.convention.result.Result;
 import top.xlaoer.shortlink.admin.common.convention.result.Results;
 import top.xlaoer.shortlink.admin.dto.req.UserRegisterReqDTO;
+import top.xlaoer.shortlink.admin.dto.req.UserUpdateReqDTO;
 import top.xlaoer.shortlink.admin.dto.resp.UserActualRespDTO;
 import top.xlaoer.shortlink.admin.dto.resp.UserRespDTO;
 import top.xlaoer.shortlink.admin.service.UserService;
@@ -46,6 +47,15 @@ public class UserController {
     @PostMapping("/api/short-link/v1/user")
     public Result<Void> register(@RequestBody UserRegisterReqDTO requestParam) {
         userService.register(requestParam);
+        return Results.success();
+    }
+
+    /**
+     * 修改用户
+     */
+    @PutMapping("/api/short-link/v1/user")
+    public Result<Void> update(@RequestBody UserUpdateReqDTO requestParam) {
+        userService.update(requestParam);
         return Results.success();
     }
 }
