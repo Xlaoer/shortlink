@@ -1,5 +1,6 @@
 package top.xlaoer.shortlink.admin.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -7,8 +8,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import top.xlaoer.shortlink.admin.dao.entity.GroupDO;
 import top.xlaoer.shortlink.admin.dao.mapper.GroupMapper;
+import top.xlaoer.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import top.xlaoer.shortlink.admin.service.GroupService;
 import top.xlaoer.shortlink.admin.toolkit.RandomGenerator;
+
+import java.util.List;
 
 /**
  * 短链接分组接口实现层
@@ -39,5 +43,16 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
                 .eq(GroupDO::getUsername, null);
         GroupDO hasGroupFlag = baseMapper.selectOne(queryWrapper);
         return hasGroupFlag == null;
+    }
+
+    @Override
+    public List<ShortLinkGroupRespDTO> listGroup() {
+        LambdaQueryWrapper<GroupDO> queryWrapper = Wrappers.lambdaQuery(GroupDO.class)
+                .eq(GroupDO::getDelFlag, 0)
+                // TODO 从当前上下文获取用户名
+                .eq(GroupDO::getUsername, "test")
+                .orderByDesc(GroupDO::getSortOrder, GroupDO::getUpdateTime);
+        List<GroupDO> groupDOList = baseMapper.selectList(queryWrapper);
+        return BeanUtil.copyToList(groupDOList, ShortLinkGroupRespDTO.class);
     }
 }
