@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import top.xlaoer.shortlink.admin.common.convention.result.Result;
 import top.xlaoer.shortlink.admin.common.convention.result.Results;
 import top.xlaoer.shortlink.admin.dto.req.ShortLinkGroupSaveReqDTO;
+import top.xlaoer.shortlink.admin.dto.req.ShortLinkGroupSortReqDTO;
 import top.xlaoer.shortlink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import top.xlaoer.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
 import top.xlaoer.shortlink.admin.service.GroupService;
@@ -52,6 +53,15 @@ public class GroupController {
     @DeleteMapping("/api/short-link/v1/group")
     public Result<Void> updateGroup(@RequestParam String gid) {
         groupService.deleteGroup(gid);
+        return Results.success();
+    }
+
+    /**
+     * 变更短链接分组的排序
+     */
+    @PostMapping("/api/short-link/v1/group/sort")
+    public Result<Void> sortGroup(@RequestBody List<ShortLinkGroupSortReqDTO> requestParam) {
+        groupService.sortGroup(requestParam);
         return Results.success();
     }
 }
