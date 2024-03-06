@@ -182,7 +182,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
         String fullShortUrl = serverName + "/" + shortUri;
         String originalLink = stringRedisTemplate.opsForValue().get(String.format(GOTO_SHORT_LINK_KEY, fullShortUrl));
         if (StrUtil.isNotBlank(originalLink)) {
-            ((HttpServletResponse) response).sendRedirect("http://" + originalLink);
+            ((HttpServletResponse) response).sendRedirect(originalLink);
             return;
         }
         // 布隆过滤器初筛
@@ -231,7 +231,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                     shortLinkDO.getOriginUrl(),
                     LinkUtil.getLinkCacheValidTime(shortLinkDO.getValidDate()), TimeUnit.MILLISECONDS
             );
-            ((HttpServletResponse) response).sendRedirect("http://"+shortLinkDO.getOriginUrl());
+            ((HttpServletResponse) response).sendRedirect(shortLinkDO.getOriginUrl());
         } finally {
             lock.unlock();
         }
