@@ -9,6 +9,7 @@ import top.xlaoer.shortlink.admin.common.convention.result.Result;
 import top.xlaoer.shortlink.admin.dto.req.RecycleBinRecoverReqDTO;
 import top.xlaoer.shortlink.admin.dto.req.RecycleBinSaveReqDTO;
 import top.xlaoer.shortlink.admin.dto.req.ShortLinkRecycleBinPageReqDTO;
+import top.xlaoer.shortlink.admin.remote.dto.req.RecycleBinRemoveReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkPageReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.resp.ShortLinkCreateRespDTO;
@@ -109,5 +110,14 @@ public interface ShortLinkRemoteService {
      */
     default void recoverRecycleBin(RecycleBinRecoverReqDTO requestParam) {
         HttpUtil.post("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/recover", JSON.toJSONString(requestParam));
+    }
+
+    /**
+     * 移除短链接
+     *
+     * @param requestParam 短链接移除请求参数
+     */
+    default void removeRecycleBin(RecycleBinRemoveReqDTO requestParam) {
+        HttpUtil.post("http://127.0.0.1:8001/api/short-link/v1/recycle-bin/remove", JSON.toJSONString(requestParam));
     }
 }
