@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import top.xlaoer.shortlink.admin.common.convention.result.Result;
 import top.xlaoer.shortlink.admin.common.convention.result.Results;
+import top.xlaoer.shortlink.admin.dto.req.RecycleBinRecoverReqDTO;
 import top.xlaoer.shortlink.admin.dto.req.RecycleBinSaveReqDTO;
 import top.xlaoer.shortlink.admin.dto.req.ShortLinkRecycleBinPageReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.ShortLinkRemoteService;
@@ -44,5 +45,14 @@ public class RecycleBinController {
     @GetMapping("/api/short-link/admin/v1/recycle-bin/page")
     public Result<IPage<ShortLinkPageRespDTO>> pageShortLink(ShortLinkRecycleBinPageReqDTO requestParam) {
         return recycleBinService.pageRecycleBinShortLink(requestParam);
+    }
+
+    /**
+     * 恢复短链接
+     */
+    @PostMapping("/api/short-link/admin/v1/recycle-bin/recover")
+    public Result<Void> recoverRecycleBin(@RequestBody RecycleBinRecoverReqDTO requestParam) {
+        shortLinkRemoteService.recoverRecycleBin(requestParam);
+        return Results.success();
     }
 }
