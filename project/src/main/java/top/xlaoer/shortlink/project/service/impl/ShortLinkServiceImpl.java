@@ -143,8 +143,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .map(Cookie::getValue)
                         .ifPresentOrElse(each -> {
                             // 有cookie，判断是否第一次访问该链接
-                            Long added = stringRedisTemplate.opsForSet().add("short-link:stats:uv:" + fullShortUrl, each);
-                            uvFirstFlag.set(added != null && added > 0L);
+                                    Long uvAdded = stringRedisTemplate.opsForSet().add("short-link:stats:uv:" + fullShortUrl, each);
+                                    uvFirstFlag.set(uvAdded != null && uvAdded > 0L);
                         }
                         // 没有uv这个cookie，加入响应uv cookie
                         , addResponseCookieTask);
@@ -152,6 +152,10 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 // 一个Cookie都没有
                 addResponseCookieTask.run();
             }
+            String remoteAddr = LinkUtil.getActualIp(((HttpServletRequest) request));
+            Long uipAdded = stringRedisTemplate.opsForSet().add("short-link:stats:uip:" + fullShortUrl, remoteAddr);
+            // 这里的实现没有采用lambda表达式，所以不需要使用AtomicBoolean来确保「可见性」
+            boolean uipFirstFlag = uipAdded != null && uipAdded > 0L;
             if (StrUtil.isBlank(gid)) {
                 LambdaQueryWrapper<ShortLinkGotoDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkGotoDO.class)
                         .eq(ShortLinkGotoDO::getFullShortUrl, fullShortUrl);
@@ -164,7 +168,7 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             LinkAccessStatsDO linkAccessStatsDO = LinkAccessStatsDO.builder()
                     .pv(1)
                     .uv(uvFirstFlag.get() ? 1 : 0)
-                    .uip(1)
+                    .uip(uipFirstFlag ? 1 : 0)
                     .hour(hour)
                     .weekday(weekValue)
                     .fullShortUrl(fullShortUrl)
