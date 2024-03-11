@@ -34,14 +34,8 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import top.xlaoer.shortlink.project.common.convention.exception.ServiceException;
-import top.xlaoer.shortlink.project.dao.entity.LinkAccessStatsDO;
-import top.xlaoer.shortlink.project.dao.entity.LinkLocaleStatsDO;
-import top.xlaoer.shortlink.project.dao.entity.ShortLinkDO;
-import top.xlaoer.shortlink.project.dao.entity.ShortLinkGotoDO;
-import top.xlaoer.shortlink.project.dao.mapper.LinkAccessStatsMapper;
-import top.xlaoer.shortlink.project.dao.mapper.LinkLocaleStatsMapper;
-import top.xlaoer.shortlink.project.dao.mapper.ShortLinkGotoMapper;
-import top.xlaoer.shortlink.project.dao.mapper.ShortLinkMapper;
+import top.xlaoer.shortlink.project.dao.entity.*;
+import top.xlaoer.shortlink.project.dao.mapper.*;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkPageReqDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
@@ -58,7 +52,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import static top.xlaoer.shortlink.project.common.constant.RedisKeyConstant.*;
-import static top.xlaoer.shortlink.project.common.constant.ShortLinkConstant.*;
+import static top.xlaoer.shortlink.project.common.constant.ShortLinkConstant.AMAP_REMOTE_URL;
 
 /**
  * 短链接接口实现层
@@ -79,6 +73,8 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
     private final LinkAccessStatsMapper linkAccessStatsMapper;
 
     private final LinkLocaleStatsMapper linkLocaleStatsMapper;
+
+    private final LinkOsStatsMapper linkOsStatsMapper;
 
     @Value("${short-link.stats.locale.amap-key}")
     private String statsLocaleAmapKey;
@@ -208,6 +204,14 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                         .date(new Date())
                         .build();
                 linkLocaleStatsMapper.shortLinkLocaleState(linkLocaleStatsDO);
+                LinkOsStatsDO linkOsStatsDO = LinkOsStatsDO.builder()
+                        .os(LinkUtil.getOs(((HttpServletRequest) request)))
+                        .cnt(1)
+                        .gid(gid)
+                        .fullShortUrl(fullShortUrl)
+                        .date(new Date())
+                        .build();
+                linkOsStatsMapper.shortLinkOsState(linkOsStatsDO);
             }
         } catch (Throwable ex) {
             log.error("短链接访问量统计异常", ex);
