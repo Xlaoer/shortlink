@@ -1,11 +1,14 @@
 package top.xlaoer.shortlink.admin.controller;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.xlaoer.shortlink.admin.common.convention.result.Result;
 import top.xlaoer.shortlink.admin.remote.dto.ShortLinkRemoteService;
+import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkStatsAccessRecordReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkStatsReqDTO;
+import top.xlaoer.shortlink.admin.remote.dto.resp.ShortLinkStatsAccessRecordRespDTO;
 import top.xlaoer.shortlink.admin.remote.dto.resp.ShortLinkStatsRespDTO;
 
 /**
@@ -27,5 +30,13 @@ public class ShortLinkStatsController {
     @GetMapping("/api/short-link/admin/v1/stats")
     public Result<ShortLinkStatsRespDTO> shortLinkStats(ShortLinkStatsReqDTO requestParam) {
         return shortLinkRemoteService.oneShortLinkStats(requestParam);
+    }
+
+    /**
+     * 访问单个短链接指定时间内访问记录监控数据
+     */
+    @GetMapping("/api/short-link/admin/v1/stats/access-record")
+    public Result<IPage<ShortLinkStatsAccessRecordRespDTO>> shortLinkStatsAccessRecord(ShortLinkStatsAccessRecordReqDTO requestParam) {
+        return shortLinkRemoteService.shortLinkStatsAccessRecord(requestParam);
     }
 }
