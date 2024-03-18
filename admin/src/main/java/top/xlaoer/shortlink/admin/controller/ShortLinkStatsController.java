@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import top.xlaoer.shortlink.admin.common.convention.result.Result;
 import top.xlaoer.shortlink.admin.remote.dto.ShortLinkRemoteService;
+import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkGroupStatsAccessRecordReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkGroupStatsReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkStatsAccessRecordReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkStatsReqDTO;
@@ -47,5 +48,13 @@ public class ShortLinkStatsController {
     @GetMapping("/api/short-link/admin/v1/stats/group")
     public Result<ShortLinkStatsRespDTO> groupShortLinkStats(ShortLinkGroupStatsReqDTO requestParam) {
         return shortLinkRemoteService.groupShortLinkStats(requestParam);
+    }
+
+    /**
+     * 访问分组短链接指定时间内访问记录监控数据
+     */
+    @GetMapping("/api/short-link/admin/v1/stats/access-record/group")
+    public Result<IPage<ShortLinkStatsAccessRecordRespDTO>> groupShortLinkStatsAccessRecord(ShortLinkGroupStatsAccessRecordReqDTO requestParam) {
+        return shortLinkRemoteService.groupShortLinkStatsAccessRecord(requestParam);
     }
 }
