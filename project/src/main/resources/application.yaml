@@ -30,3 +30,5 @@ short-link:
   stats:
     locale:
       amap-key: 58913415318e8959bca68b6ef77b2c2e
+  domain:
+    default: nurl.ink:8001
