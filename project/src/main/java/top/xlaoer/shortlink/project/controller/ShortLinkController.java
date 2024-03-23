@@ -7,8 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import top.xlaoer.shortlink.project.common.convention.result.Result;
 import top.xlaoer.shortlink.project.common.convention.result.Results;
+import top.xlaoer.shortlink.project.dto.req.ShortLinkBatchCreateReqDTO;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkPageReqDTO;
+import top.xlaoer.shortlink.project.dto.resp.ShortLinkBatchCreateRespDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkPageRespDTO;
@@ -55,5 +57,13 @@ public class ShortLinkController {
     @GetMapping("/{short-uri}")
     public void restoreUrl(@PathVariable("short-uri") String shortUri, ServletRequest request, ServletResponse response) {
         shortLinkService.restoreUrl(shortUri, request, response);
+    }
+
+    /**
+     * 批量创建短链接
+     */
+    @PostMapping("/api/short-link/v1/create/batch")
+    public Result<ShortLinkBatchCreateRespDTO> batchCreateShortLink(@RequestBody ShortLinkBatchCreateReqDTO requestParam) {
+        return Results.success(shortLinkService.batchCreateShortLink(requestParam));
     }
 }
