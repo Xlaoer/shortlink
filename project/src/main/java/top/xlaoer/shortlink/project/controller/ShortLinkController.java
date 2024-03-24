@@ -10,6 +10,7 @@ import top.xlaoer.shortlink.project.common.convention.result.Results;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkBatchCreateReqDTO;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkPageReqDTO;
+import top.xlaoer.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkBatchCreateRespDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
@@ -65,5 +66,14 @@ public class ShortLinkController {
     @PostMapping("/api/short-link/v1/create/batch")
     public Result<ShortLinkBatchCreateRespDTO> batchCreateShortLink(@RequestBody ShortLinkBatchCreateReqDTO requestParam) {
         return Results.success(shortLinkService.batchCreateShortLink(requestParam));
+    }
+
+    /**
+     * 修改短链接
+     */
+    @PostMapping("/api/short-link/v1/update")
+    public Result<Void> updateShortLink(@RequestBody ShortLinkUpdateReqDTO requestParam) {
+        shortLinkService.updateShortLink(requestParam);
+        return Results.success();
     }
 }

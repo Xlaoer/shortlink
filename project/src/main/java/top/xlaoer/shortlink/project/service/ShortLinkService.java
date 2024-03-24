@@ -5,9 +5,11 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import top.xlaoer.shortlink.project.dao.entity.ShortLinkDO;
+import top.xlaoer.shortlink.project.dto.biz.ShortLinkStatsRecordDTO;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkBatchCreateReqDTO;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkCreateReqDTO;
 import top.xlaoer.shortlink.project.dto.req.ShortLinkPageReqDTO;
+import top.xlaoer.shortlink.project.dto.req.ShortLinkUpdateReqDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkBatchCreateRespDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkCreateRespDTO;
 import top.xlaoer.shortlink.project.dto.resp.ShortLinkGroupCountQueryRespDTO;
@@ -60,4 +62,21 @@ public interface ShortLinkService extends IService<ShortLinkDO> {
      * @return 批量创建短链接返回参数
      */
     ShortLinkBatchCreateRespDTO batchCreateShortLink(ShortLinkBatchCreateReqDTO requestParam);
+
+
+    /**
+     * 修改短链接
+     *
+     * @param requestParam 修改短链接请求参数
+     */
+    void updateShortLink(ShortLinkUpdateReqDTO requestParam);
+
+    /**
+     * 短链接统计
+     *
+     * @param fullShortUrl         完整短链接
+     * @param gid                  分组标识
+     * @param shortLinkStatsRecord 短链接统计实体参数
+     */
+    void shortLinkStats(String fullShortUrl, String gid, ShortLinkStatsRecordDTO shortLinkStatsRecord);
 }

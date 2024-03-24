@@ -3,11 +3,10 @@ package top.xlaoer.shortlink.admin.controller;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.SneakyThrows;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import top.xlaoer.shortlink.admin.common.convention.result.Result;
+import top.xlaoer.shortlink.admin.common.convention.result.Results;
+import top.xlaoer.shortlink.admin.dto.req.ShortLinkUpdateReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.ShortLinkRemoteService;
 import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkBatchCreateReqDTO;
 import top.xlaoer.shortlink.admin.remote.dto.req.ShortLinkCreateReqDTO;
@@ -59,5 +58,14 @@ public class ShortLinkController {
             List<ShortLinkBaseInfoRespDTO> baseLinkInfos = shortLinkBatchCreateRespDTOResult.getData().getBaseLinkInfos();
             EasyExcelWebUtil.write(response, "批量创建短链接-SaaS短链接系统", ShortLinkBaseInfoRespDTO.class, baseLinkInfos);
         }
+    }
+
+    /**
+     * 修改短链接
+     */
+    @PostMapping("/api/short-link/admin/v1/update")
+    public Result<Void> updateShortLink(@RequestBody ShortLinkUpdateReqDTO requestParam) {
+        shortLinkRemoteService.updateShortLink(requestParam);
+        return Results.success();
     }
 }
