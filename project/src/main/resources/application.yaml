@@ -32,3 +32,12 @@ short-link:
       amap-key: 58913415318e8959bca68b6ef77b2c2e
   domain:
     default: nurl.ink:8001
+  goto-domain:
+    white-list:
+      enable: true
+      names: '拿个offer,知乎,掘金,博客园'
+      details:
+        - nageoffer.com
+        - zhihu.com
+        - juejin.cn
+        - cnblogs.com
