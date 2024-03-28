@@ -11,6 +11,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import java.io.IOException;
 import java.util.List;
 
+import static top.xlaoer.shortlink.admin.common.constant.RedisCacheConstant.USER_LOGIN_KEY;
+
 /**
  * 用户信息传输过滤器
  */
@@ -34,7 +36,7 @@ public class UserTransmitFilter implements Filter {
             String username = httpServletRequest.getHeader("username");
             if(StrUtil.isNotBlank(username)) {
                 String token = httpServletRequest.getHeader("token");
-                Object userInfoJsonStr = stringRedisTemplate.opsForHash().get("login_" + username, token);
+                Object userInfoJsonStr = stringRedisTemplate.opsForHash().get(USER_LOGIN_KEY + username, token);
                 if (userInfoJsonStr != null) {
                     UserInfoDTO userInfoDTO = JSON.parseObject(userInfoJsonStr.toString(), UserInfoDTO.class);
                     UserContext.setUser(userInfoDTO);
