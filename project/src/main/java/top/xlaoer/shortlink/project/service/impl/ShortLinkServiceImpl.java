@@ -143,13 +143,11 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
             baseMapper.insert(shortLinkDO);
             shortLinkGotoMapper.insert(linkGotoDO);
         } catch (DuplicateKeyException ex) {
-            LambdaQueryWrapper<ShortLinkDO> queryWrapper = Wrappers.lambdaQuery(ShortLinkDO.class)
-                    .eq(ShortLinkDO::getFullShortUrl, fullShortUrl);
-            ShortLinkDO hasShortLinkDO = baseMapper.selectOne(queryWrapper);
-            if (hasShortLinkDO != null) {
-                log.warn("短链接：{} 重复入库", fullShortUrl);
-                throw new ServiceException("短链接生成重复");
-            }
+            //布隆过滤器
+            //1. 查询是否存在，如果返回存在，可能数据是不存在的。「原来检验一些数据是否真的存在」
+            //2. 查询是否存在，如果返回不存在，数据一定不存在。「现在采用这种方案」
+            //因为允许生成其他的短链接，减少一次访问数据库的性能损耗
+            throw new ServiceException(String.format("短链接：%s 生成重复", fullShortUrl));
         }
         stringRedisTemplate.opsForValue().set(
                 String.format(GOTO_SHORT_LINK_KEY, fullShortUrl),
@@ -227,7 +225,9 @@ public class ShortLinkServiceImpl extends ServiceImpl<ShortLinkMapper, ShortLink
                 throw new ServiceException("短链接频繁生成，请稍后再试");
             }
             String originUrl = requestParam.getOriginUrl();
-            originUrl += System.currentTimeMillis();
+            // 同一毫秒下，大量请求相同的原始链接会生成重复短链接，并判断不存在，通过该方式访问数据库。
+            // 为此，我们使用 UUID 替换了当前时间戳，来一定程度减少重复的短链接生成报错。
+            originUrl += UUID.randomUUID().toString();
             shorUri = HashUtil.hashToBase62(originUrl);
             if (!shortUriCreateCachePenetrationBloomFilter.contains(createShortLinkDefaultDomain + "/" + shorUri)) {
                 break;
