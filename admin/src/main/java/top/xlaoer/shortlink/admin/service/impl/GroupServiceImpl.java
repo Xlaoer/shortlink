@@ -20,7 +20,7 @@ import top.xlaoer.shortlink.admin.dao.mapper.GroupMapper;
 import top.xlaoer.shortlink.admin.dto.req.ShortLinkGroupSortReqDTO;
 import top.xlaoer.shortlink.admin.dto.req.ShortLinkGroupUpdateReqDTO;
 import top.xlaoer.shortlink.admin.dto.resp.ShortLinkGroupRespDTO;
-import top.xlaoer.shortlink.admin.remote.dto.ShortLinkRemoteService;
+import top.xlaoer.shortlink.admin.remote.dto.ShortLinkActualRemoteService;
 import top.xlaoer.shortlink.admin.remote.dto.resp.ShortLinkGroupCountQueryRespDTO;
 import top.xlaoer.shortlink.admin.service.GroupService;
 import top.xlaoer.shortlink.admin.toolkit.RandomGenerator;
@@ -44,11 +44,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
     @Value("${short-link.group.max-num}")
     private Integer groupMaxNum;
 
-    /**
-     * 后续重构为 SpringCloud Feign 调用
-     */
-    ShortLinkRemoteService shortLinkRemoteService = new ShortLinkRemoteService() {
-    };
+    private final ShortLinkActualRemoteService shortLinkActualRemoteService;
 
     @Override
     public void saveGroup(String groupName) {
@@ -97,7 +93,7 @@ public class GroupServiceImpl extends ServiceImpl<GroupMapper, GroupDO> implemen
                 .eq(GroupDO::getUsername, UserContext.getUsername())
                 .orderByDesc(GroupDO::getSortOrder, GroupDO::getUpdateTime);
         List<GroupDO> groupDOList = baseMapper.selectList(queryWrapper);
-        Result<List<ShortLinkGroupCountQueryRespDTO>> listResult = shortLinkRemoteService
+        Result<List<ShortLinkGroupCountQueryRespDTO>> listResult = shortLinkActualRemoteService
                 .listGroupShortLinkCount(groupDOList.stream().map(GroupDO::getGid).toList());
         List<ShortLinkGroupRespDTO> shortLinkGroupRespDTOList = BeanUtil.copyToList(groupDOList, ShortLinkGroupRespDTO.class);
         shortLinkGroupRespDTOList.forEach(each -> {
